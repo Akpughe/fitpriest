@@ -90,6 +90,8 @@ Phase 1 focuses on building the complete visual structure of the application wit
 fitpriest/
 ├── app/                    # Next.js app directory
 │   ├── analytics/         # Analytics page
+│   ├── api/              # API routes (NEW in Phase 2)
+│   │   └── auth/         # NextAuth endpoints
 │   ├── auth/             # Authentication pages
 │   ├── consultation/     # Consultation booking
 │   ├── dashboard/        # Client dashboard
@@ -113,7 +115,15 @@ fitpriest/
 │       ├── badge.tsx
 │       └── textarea.tsx
 ├── lib/
+│   ├── airtable/        # Airtable integration (NEW)
+│   │   ├── client.ts    # Airtable client setup
+│   │   ├── schema.ts    # Database schema definitions
+│   │   ├── setup.ts     # Auto-creation utilities
+│   │   └── queries/     # Type-safe query functions
 │   └── utils.ts         # Utility functions
+├── scripts/             # Automation scripts (NEW)
+│   └── setup-airtable.ts # Auto-create Airtable tables
+├── .env.example         # Environment variable template
 ├── tailwind.config.ts   # Tailwind configuration
 ├── tsconfig.json        # TypeScript configuration
 └── package.json         # Dependencies
@@ -170,15 +180,134 @@ Open [http://localhost:3000](http://localhost:3000) to view the application.
 - ✅ Ready for backend integration
 - ✅ SEO-friendly metadata
 
-## 📋 Next Steps (Phase 2)
+## 🎯 Phase 2 - Core Features & Data Connections (IN PROGRESS) 🚧
 
-Phase 2 will focus on backend integration:
-- Airtable data integration
-- Google Calendar API for scheduling
-- Stripe payment processing
-- Resend email service
-- Authentication implementation
-- Real-time data updates
+### Overview
+Phase 2 focuses on connecting all dynamic features to Airtable and external APIs, transforming the UI into a fully functional fitness coaching platform.
+
+### Tech Stack
+**Backend & Data:**
+- **Database**: Airtable (with auto-creation scripts)
+- **Authentication**: NextAuth.js (Google OAuth + Email)
+- **Payments**: Stripe Checkout + Webhooks
+- **Email**: Resend + React Email
+- **Calendar**: Google Calendar API
+- **Validation**: Zod
+
+### Database Schema
+
+The application uses **8 Airtable tables**:
+
+1. **Users** - All user accounts (clients + trainers)
+2. **Subscriptions** - Active plans and payment tracking
+3. **Consultations** - Free consultation bookings
+4. **TrainerAvailability** - Trainer schedule configuration
+5. **Sessions** - Booked training sessions
+6. **WorkoutPlans** - Trainer-defined programs
+7. **WorkoutLogs** - Client workout tracking
+8. **BodyMetrics** - Body measurements and progress
+
+### Setup Instructions
+
+#### 1. Create Airtable Account & Base
+
+1. Sign up at [airtable.com](https://airtable.com)
+2. Create a new base (you can start with a blank base)
+3. Note down your **Base ID** (found in the URL or API docs)
+
+#### 2. Get Airtable Personal Access Token
+
+1. Go to [airtable.com/create/tokens](https://airtable.com/create/tokens)
+2. Click "Create new token"
+3. Give it a name (e.g., "Fitness Priest Dev")
+4. Add the following scopes:
+   - `data.records:read`
+   - `data.records:write`
+   - `schema.bases:read`
+   - `schema.bases:write`
+5. Add access to your base
+6. Copy the token (you won't see it again!)
+
+#### 3. Configure Environment Variables
+
+```bash
+# Copy the example file
+cp .env.example .env.local
+
+# Edit .env.local and add your credentials
+# At minimum, you need:
+AIRTABLE_API_KEY=your_token_here
+AIRTABLE_BASE_ID=your_base_id_here
+```
+
+#### 4. Auto-Create Airtable Tables
+
+Run the setup script to automatically create all 8 tables with the correct schema:
+
+```bash
+# Create all tables with detailed logging
+npm run setup:airtable
+
+# View existing base info
+npm run setup:airtable:info
+
+# Validate that all required tables exist
+npm run setup:airtable:validate
+```
+
+The script will:
+- ✅ Check which tables already exist
+- ✅ Create only missing tables
+- ✅ Configure all fields with proper types
+- ✅ Set up select options, date formats, etc.
+- ✅ Provide detailed success/error reporting
+
+#### 5. Verify Setup
+
+After running the setup script, log into Airtable and verify that all 8 tables were created successfully.
+
+### Features (Phase 2)
+
+#### Authentication ✅ (Next)
+- [ ] NextAuth.js configuration
+- [ ] Google OAuth integration
+- [ ] Email/password authentication
+- [ ] User record creation in Airtable
+- [ ] Protected routes middleware
+
+#### Consultation Booking (Planned)
+- [ ] Booking form with date/time selection
+- [ ] Google Calendar event creation
+- [ ] Automatic Google Meet link generation
+- [ ] Email confirmation via Resend
+- [ ] Record storage in Airtable
+
+#### Payment Processing (Planned)
+- [ ] Stripe Checkout integration
+- [ ] Three-tier subscription plans
+- [ ] Webhook handlers for payment events
+- [ ] Subscription record updates in Airtable
+- [ ] Payment success/failure handling
+
+#### Session Scheduling (Planned)
+- [ ] Trainer availability management
+- [ ] Client session booking flow
+- [ ] Calendar integration
+- [ ] Session limits based on plan
+- [ ] Email reminders
+
+#### Workout & Metrics Tracking (Planned)
+- [ ] Trainer workout plan creation
+- [ ] Client workout logging
+- [ ] Body metrics tracking
+- [ ] Progress charts with Recharts
+- [ ] Personal records tracking
+
+#### Analytics Dashboard (Planned)
+- [ ] Weight trend visualization
+- [ ] Training volume charts
+- [ ] Progress metrics
+- [ ] Milestone achievements
 
 ## 🎨 Design Decisions
 
@@ -216,11 +345,19 @@ Phase 2 will focus on backend integration:
 - lucide-react: ^0.462.0
 - class-variance-authority: ^0.7.0
 
+### Backend & Data (Phase 2)
+- airtable: ^0.12.2 - Database client
+- zod: ^4.1.12 - Schema validation
+- dotenv: ^17.2.3 - Environment variables
+
 ### Utilities
 - clsx: ^2.1.1
 - tailwind-merge: ^2.5.4
 - date-fns: ^4.1.0
-- recharts: ^2.13.3 (for future chart implementation)
+- recharts: ^2.13.3
+
+### Dev Tools
+- tsx: ^4.20.6 - TypeScript execution
 
 ## 📄 License
 
