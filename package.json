@@ -7,9 +7,9 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "setup:airtable": "tsx scripts/setup-airtable.ts",
-    "setup:airtable:info": "tsx scripts/setup-airtable.ts --info",
-    "setup:airtable:validate": "tsx scripts/setup-airtable.ts --validate"
+    "setup:airtable": "npx tsx scripts/setup-airtable.ts",
+    "setup:airtable:info": "npx tsx scripts/setup-airtable.ts --info",
+    "setup:airtable:validate": "npx tsx scripts/setup-airtable.ts --validate"
   },
   "dependencies": {
     "airtable": "^0.12.2",

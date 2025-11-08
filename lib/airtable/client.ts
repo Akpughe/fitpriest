@@ -6,7 +6,7 @@
  * 2. Schema/metadata operations (using fetch API)
  */
 
-import Airtable from 'airtable';
+import Airtable from "airtable";
 
 // Environment variable validation
 function getEnvVar(key: string, required: boolean = true): string {
@@ -14,15 +14,19 @@ function getEnvVar(key: string, required: boolean = true): string {
   if (required && !value) {
     throw new Error(`Missing required environment variable: ${key}`);
   }
-  return value || '';
+  return value || "";
 }
 
-// Airtable configuration
+// Airtable configuration - lazy loaded to allow dotenv to load first
 export const AIRTABLE_CONFIG = {
-  apiKey: getEnvVar('AIRTABLE_API_KEY', false),
-  baseId: getEnvVar('AIRTABLE_BASE_ID', false),
-  metaApiUrl: 'https://api.airtable.com/v0/meta',
-  recordsApiUrl: 'https://api.airtable.com/v0',
+  get apiKey() {
+    return getEnvVar("AIRTABLE_API_KEY", false);
+  },
+  get baseId() {
+    return getEnvVar("AIRTABLE_BASE_ID", false);
+  },
+  metaApiUrl: "https://api.airtable.com/v0/meta",
+  recordsApiUrl: "https://api.airtable.com/v0",
 };
 
 /**
@@ -31,10 +35,10 @@ export const AIRTABLE_CONFIG = {
  */
 export function getAirtableBase() {
   if (!AIRTABLE_CONFIG.apiKey) {
-    throw new Error('AIRTABLE_API_KEY is not configured');
+    throw new Error("AIRTABLE_API_KEY is not configured");
   }
   if (!AIRTABLE_CONFIG.baseId) {
-    throw new Error('AIRTABLE_BASE_ID is not configured');
+    throw new Error("AIRTABLE_BASE_ID is not configured");
   }
 
   Airtable.configure({
@@ -53,7 +57,7 @@ export async function makeMetaApiRequest(
   options: RequestInit = {}
 ): Promise<any> {
   if (!AIRTABLE_CONFIG.apiKey) {
-    throw new Error('AIRTABLE_API_KEY is not configured');
+    throw new Error("AIRTABLE_API_KEY is not configured");
   }
 
   const url = `${AIRTABLE_CONFIG.metaApiUrl}${endpoint}`;
@@ -61,8 +65,8 @@ export async function makeMetaApiRequest(
   const response = await fetch(url, {
     ...options,
     headers: {
-      'Authorization': `Bearer ${AIRTABLE_CONFIG.apiKey}`,
-      'Content-Type': 'application/json',
+      Authorization: `Bearer ${AIRTABLE_CONFIG.apiKey}`,
+      "Content-Type": "application/json",
       ...options.headers,
     },
   });
@@ -82,7 +86,7 @@ export async function makeMetaApiRequest(
  */
 export async function getBaseSchema() {
   if (!AIRTABLE_CONFIG.baseId) {
-    throw new Error('AIRTABLE_BASE_ID is not configured');
+    throw new Error("AIRTABLE_BASE_ID is not configured");
   }
 
   return makeMetaApiRequest(`/bases/${AIRTABLE_CONFIG.baseId}/tables`);
@@ -102,11 +106,11 @@ export async function createTable(tableDefinition: {
   }>;
 }) {
   if (!AIRTABLE_CONFIG.baseId) {
-    throw new Error('AIRTABLE_BASE_ID is not configured');
+    throw new Error("AIRTABLE_BASE_ID is not configured");
   }
 
   return makeMetaApiRequest(`/bases/${AIRTABLE_CONFIG.baseId}/tables`, {
-    method: 'POST',
+    method: "POST",
     body: JSON.stringify(tableDefinition),
   });
 }
@@ -119,7 +123,7 @@ export async function tableExists(tableName: string): Promise<boolean> {
     const schema = await getBaseSchema();
     return schema.tables.some((table: any) => table.name === tableName);
   } catch (error) {
-    console.error('Error checking if table exists:', error);
+    console.error("Error checking if table exists:", error);
     return false;
   }
 }
@@ -129,14 +133,14 @@ export async function tableExists(tableName: string): Promise<boolean> {
  * Use these when accessing tables to avoid typos
  */
 export const TABLES = {
-  USERS: 'Users',
-  SUBSCRIPTIONS: 'Subscriptions',
-  CONSULTATIONS: 'Consultations',
-  TRAINER_AVAILABILITY: 'TrainerAvailability',
-  SESSIONS: 'Sessions',
-  WORKOUT_PLANS: 'WorkoutPlans',
-  WORKOUT_LOGS: 'WorkoutLogs',
-  BODY_METRICS: 'BodyMetrics',
+  USERS: "Users",
+  SUBSCRIPTIONS: "Subscriptions",
+  CONSULTATIONS: "Consultations",
+  TRAINER_AVAILABILITY: "TrainerAvailability",
+  SESSIONS: "Sessions",
+  WORKOUT_PLANS: "WorkoutPlans",
+  WORKOUT_LOGS: "WorkoutLogs",
+  BODY_METRICS: "BodyMetrics",
 } as const;
 
-export type TableName = typeof TABLES[keyof typeof TABLES];
+export type TableName = (typeof TABLES)[keyof typeof TABLES];
