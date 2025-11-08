@@ -1,15 +1,13 @@
 /**
  * NextAuth Initialization
  *
- * Main auth instance and helper functions
+ * Main auth instance and helper functions (NextAuth v4)
  */
 
-import NextAuth from "next-auth";
+import NextAuth, { NextAuthOptions } from "next-auth";
 import { authConfig } from "./auth.config";
 
-export const {
-  handlers: { GET, POST },
-  auth,
-  signIn,
-  signOut,
-} = NextAuth(authConfig);
+const handler = NextAuth(authConfig as NextAuthOptions);
+
+export { handler as GET, handler as POST };
+export default handler;

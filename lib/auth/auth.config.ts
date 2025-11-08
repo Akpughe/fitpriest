@@ -4,15 +4,8 @@
  * Authentication setup with Google OAuth and Credentials providers
  */
 
-import type { NextAuthConfig } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import CredentialsProvider from "next-auth/providers/credentials";
-import {
-  createUser,
-  findUserByEmail,
-  findUserById,
-} from "../airtable/queries/users";
-import { hashPassword, verifyPassword } from "./password";
 
 // Extend the built-in session types
 declare module "next-auth" {
@@ -45,7 +38,7 @@ declare module "next-auth/jwt" {
   }
 }
 
-export const authConfig: NextAuthConfig = {
+export const authConfig = {
   providers: [
     // Google OAuth Provider
     GoogleProvider({
@@ -77,6 +70,12 @@ export const authConfig: NextAuthConfig = {
         if (!credentials?.email || !credentials?.password) {
           throw new Error("Email and password are required");
         }
+
+        // Dynamic imports to avoid Edge runtime issues
+        const { findUserByEmail, createUser } = await import(
+          "../airtable/queries/users"
+        );
+        const { hashPassword } = await import("./password");
 
         const email = credentials.email as string;
         const password = credentials.password as string;
@@ -159,44 +158,15 @@ export const authConfig: NextAuthConfig = {
   ],
 
   callbacks: {
-    authorized({ auth, request: { nextUrl } }) {
-      const isLoggedIn = !!auth?.user;
-      const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
-      const isOnSchedule = nextUrl.pathname.startsWith("/schedule");
-      const isOnWorkout = nextUrl.pathname.startsWith("/workout");
-      const isOnAnalytics = nextUrl.pathname.startsWith("/analytics");
-      const isOnProfile = nextUrl.pathname.startsWith("/profile");
-      const isOnConsultation = nextUrl.pathname.startsWith("/consultation");
-      const isOnTrainer = nextUrl.pathname.startsWith("/trainer");
-
-      // Trainer-only routes
-      if (isOnTrainer) {
-        if (!isLoggedIn) return false;
-        const isTrainerOrAdmin =
-          auth?.user?.role === "trainer" || auth?.user?.role === "admin";
-        return isTrainerOrAdmin;
-      }
-
-      // Protected routes
-      const isProtected =
-        isOnDashboard ||
-        isOnSchedule ||
-        isOnWorkout ||
-        isOnAnalytics ||
-        isOnProfile ||
-        isOnConsultation;
-
-      if (isProtected && !isLoggedIn) {
-        return false;
-      }
-
-      return true;
-    },
-
-    async signIn({ user, account, profile }) {
+    async signIn({ user, account, profile }: any) {
       // For Google OAuth
       if (account?.provider === "google" && profile?.email) {
         try {
+          // Dynamic imports to avoid Edge runtime issues
+          const { findUserByEmail, createUser } = await import(
+            "../airtable/queries/users"
+          );
+
           // Check if user exists
           let existingUser = await findUserByEmail(profile.email);
 
@@ -225,7 +195,7 @@ export const authConfig: NextAuthConfig = {
       return true;
     },
 
-    async jwt({ token, user, account }) {
+    async jwt({ token, user, account }: any) {
       // Initial sign in
       if (user) {
         token.id = user.id;
@@ -238,7 +208,7 @@ export const authConfig: NextAuthConfig = {
       return token;
     },
 
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       // Send properties to the client
       if (token && session.user) {
         session.user.id = token.id;
@@ -260,7 +230,7 @@ export const authConfig: NextAuthConfig = {
   },
 
   session: {
-    strategy: "jwt",
+    strategy: "jwt" as const,
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 

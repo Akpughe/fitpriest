@@ -46,7 +46,7 @@ async function main() {
 
       if (info.tables.length > 0) {
         console.log('Tables:');
-        info.tables.forEach((table, index) => {
+        info.tables.forEach((table: any, index: number) => {
           console.log(`\n${index + 1}. ${table.name}`);
           if (table.description) {
             console.log(`   Description: ${table.description}`);
