@@ -1,11 +1,16 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ArrowRight, CheckCircle, Dumbbell, TrendingUp, Calendar, Target } from "lucide-react"
+import { StatCard } from "@/components/ui/stat-card"
+import { FloatingBadge } from "@/components/ui/floating-badge"
+import { AvatarGroup } from "@/components/ui/avatar-group"
+import { DecorativeCurves, DecorativeCircles } from "@/components/ui/decorative-curves"
+import { ArrowRight, CheckCircle, Dumbbell, TrendingUp, Calendar, Target, Users, Trophy, Heart, Instagram, Youtube, Twitter } from "lucide-react"
 
 const fadeInUp = {
   initial: { opacity: 0, y: 20 },
@@ -24,69 +29,188 @@ const staggerContainer = {
 export default function LandingPage() {
   return (
     <div className="flex flex-col">
-      {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-primary/10 via-background to-background py-20 md:py-32">
-        <div className="container">
-          <motion.div
-            initial="initial"
-            animate="animate"
-            variants={staggerContainer}
-            className="mx-auto max-w-4xl text-center"
-          >
-            <motion.div variants={fadeInUp} className="mb-4">
-              <Badge className="mb-4">
-                <Dumbbell className="mr-1 h-3 w-3" />
-                Your Personal Fitness Journey Starts Here
-              </Badge>
-            </motion.div>
+      {/* Hero Section - Dark Premium Design */}
+      <section className="relative min-h-screen bg-brand-black overflow-hidden flex items-center">
+        {/* Decorative Background Elements */}
+        <DecorativeCurves />
+        <DecorativeCircles />
 
-            <motion.h1 variants={fadeInUp} className="mb-6">
-              Transform Your Body,
-              <br />
-              <span className="text-primary">Elevate Your Life</span>
-            </motion.h1>
+        {/* Social Media Sidebar */}
+        <motion.div
+          initial={{ opacity: 0, x: -20 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ delay: 0.5 }}
+          className="fixed left-6 top-1/2 -translate-y-1/2 z-30 hidden lg:flex flex-col gap-6"
+        >
+          <a href="#" className="text-white/60 hover:text-brand-orange-500 transition-colors">
+            <Instagram className="w-5 h-5" />
+          </a>
+          <a href="#" className="text-white/60 hover:text-brand-orange-500 transition-colors">
+            <Youtube className="w-5 h-5" />
+          </a>
+          <a href="#" className="text-white/60 hover:text-brand-orange-500 transition-colors">
+            <Twitter className="w-5 h-5" />
+          </a>
+        </motion.div>
 
-            <motion.p variants={fadeInUp} className="mb-8 text-xl text-muted-foreground">
-              Get personalized coaching, custom workout plans, and expert guidance
-              to achieve your fitness goals faster than ever before.
-            </motion.p>
-
-            <motion.div variants={fadeInUp} className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Button size="lg" asChild>
-                <Link href="/consultation">
-                  Book Free Consultation
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" asChild>
-                <Link href="/plans">View Plans</Link>
-              </Button>
-            </motion.div>
-
-            {/* Stats */}
+        <div className="container relative z-10">
+          <div className="grid lg:grid-cols-2 gap-12 items-center min-h-screen py-20">
+            {/* Left Column - Content */}
             <motion.div
-              variants={fadeInUp}
-              className="mt-16 grid grid-cols-3 gap-8 border-t pt-8"
+              initial="initial"
+              animate="animate"
+              variants={staggerContainer}
+              className="space-y-8"
             >
-              <div>
-                <div className="text-3xl font-bold text-primary">500+</div>
-                <div className="text-sm text-muted-foreground">Clients Transformed</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-primary">10+</div>
-                <div className="text-sm text-muted-foreground">Years Experience</div>
-              </div>
-              <div>
-                <div className="text-3xl font-bold text-primary">95%</div>
-                <div className="text-sm text-muted-foreground">Success Rate</div>
+              <motion.h1
+                variants={fadeInUp}
+                className="text-white leading-none"
+              >
+                Personalized Plans
+                <br />
+                for Maximum
+                <br />
+                <span className="text-brand-orange-500">Impact</span>
+              </motion.h1>
+
+              <motion.p
+                variants={fadeInUp}
+                className="text-lg text-gray-300 max-w-xl leading-relaxed"
+              >
+                No matter where you are in your fitness journey, I'm here to help you
+                take the next step. We'll work together to build the strength, energy, and
+                confidence you deserve.
+              </motion.p>
+
+              <motion.div variants={fadeInUp}>
+                <Link href="/consultation">
+                  <button className="btn-primary">
+                    Schedule a Consultation
+                  </button>
+                </Link>
+              </motion.div>
+            </motion.div>
+
+            {/* Right Column - Hero Image & Stats */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="relative"
+            >
+              {/* Placeholder for trainer image */}
+              <div className="relative aspect-[3/4] max-w-md mx-auto">
+                <div className="absolute inset-0 bg-gradient-to-br from-brand-orange-500/20 to-brand-gold-500/10 rounded-3xl" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <Dumbbell className="w-32 h-32 text-brand-orange-500/30" />
+                </div>
+
+                {/* Floating Stats Badges */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 }}
+                  className="absolute -top-4 -right-4 lg:right-0"
+                >
+                  <FloatingBadge variant="light">
+                    <div className="text-center">
+                      <div className="text-2xl font-black text-brand-orange-500">10+</div>
+                      <div className="text-xs text-gray-600">Years of Practice</div>
+                    </div>
+                  </FloatingBadge>
+                </motion.div>
+
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.8 }}
+                  className="absolute -bottom-4 -left-4 lg:left-0"
+                >
+                  <FloatingBadge variant="light">
+                    <div className="space-y-2">
+                      <div className="text-xs text-gray-600 mb-1">300+ Happy customers</div>
+                      <AvatarGroup
+                        avatars={[
+                          { src: "/avatars/1.jpg", alt: "Client 1" },
+                          { src: "/avatars/2.jpg", alt: "Client 2" },
+                          { src: "/avatars/3.jpg", alt: "Client 3" },
+                          { src: "/avatars/4.jpg", alt: "Client 4" },
+                          { src: "/avatars/5.jpg", alt: "Client 5" },
+                        ]}
+                        max={3}
+                        size="sm"
+                      />
+                    </div>
+                  </FloatingBadge>
+                </motion.div>
               </div>
             </motion.div>
-          </motion.div>
+          </div>
+        </div>
+
+        {/* Bottom Gradient Overlay */}
+        <div className="absolute bottom-0 left-0 right-0 h-64 bg-gradient-dark-rust pointer-events-none" />
+      </section>
+
+      {/* About Me Section with Stat Cards */}
+      <section className="py-20 lg:py-32 bg-brand-cream-100">
+        <div className="container">
+          <div className="mx-auto max-w-2xl text-center mb-16">
+            <motion.h2
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              className="mb-4"
+            >
+              About me
+            </motion.h2>
+          </div>
+
+          <div className="grid gap-8 md:grid-cols-2 lg:grid-cols-3 max-w-5xl mx-auto">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0 }}
+            >
+              <StatCard
+                icon={Users}
+                value="120K+"
+                label="Thousands trust for reviews. Join these and discover your incredible"
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.1 }}
+            >
+              <StatCard
+                icon={Trophy}
+                value="4.8"
+                label="Positive savings by power around the work. Check out the reviews here"
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+            >
+              <StatCard
+                icon={Heart}
+                value="100%"
+                label="User satisfaction with better, reflecting stronger project performance"
+              />
+            </motion.div>
+          </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20">
+      <section className="py-20 lg:py-32">
         <div className="container">
           <div className="mx-auto max-w-2xl text-center mb-16">
             <h2 className="mb-4">Why Choose THE FITNESS PRIEST</h2>
@@ -102,10 +226,10 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ delay: 0 }}
             >
-              <Card className="h-full hover:shadow-lg transition-shadow">
+              <Card className="h-full hover:shadow-large transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
-                  <div className="mb-2 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Target className="h-6 w-6 text-primary" />
+                  <div className="mb-2 w-12 h-12 rounded-lg bg-brand-orange-100 flex items-center justify-center">
+                    <Target className="h-6 w-6 text-brand-orange-500" />
                   </div>
                   <CardTitle>Personalized Plans</CardTitle>
                   <CardDescription>
@@ -121,10 +245,10 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.1 }}
             >
-              <Card className="h-full hover:shadow-lg transition-shadow">
+              <Card className="h-full hover:shadow-large transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
-                  <div className="mb-2 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <Calendar className="h-6 w-6 text-primary" />
+                  <div className="mb-2 w-12 h-12 rounded-lg bg-brand-orange-100 flex items-center justify-center">
+                    <Calendar className="h-6 w-6 text-brand-orange-500" />
                   </div>
                   <CardTitle>Flexible Scheduling</CardTitle>
                   <CardDescription>
@@ -140,10 +264,10 @@ export default function LandingPage() {
               viewport={{ once: true }}
               transition={{ delay: 0.2 }}
             >
-              <Card className="h-full hover:shadow-lg transition-shadow">
+              <Card className="h-full hover:shadow-large transition-all duration-300 hover:-translate-y-1">
                 <CardHeader>
-                  <div className="mb-2 w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
-                    <TrendingUp className="h-6 w-6 text-primary" />
+                  <div className="mb-2 w-12 h-12 rounded-lg bg-brand-orange-100 flex items-center justify-center">
+                    <TrendingUp className="h-6 w-6 text-brand-orange-500" />
                   </div>
                   <CardTitle>Track Progress</CardTitle>
                   <CardDescription>
@@ -181,7 +305,7 @@ export default function LandingPage() {
                   "Injury Prevention Expert"
                 ].map((cert, i) => (
                   <div key={i} className="flex items-center gap-2">
-                    <CheckCircle className="h-5 w-5 text-primary" />
+                    <CheckCircle className="h-5 w-5 text-brand-orange-500" />
                     <span>{cert}</span>
                   </div>
                 ))}
@@ -202,7 +326,7 @@ export default function LandingPage() {
               className="relative"
             >
               <div className="aspect-square rounded-lg bg-gradient-to-br from-primary/20 to-accent/20 flex items-center justify-center">
-                <Dumbbell className="h-32 w-32 text-primary/40" />
+                <Dumbbell className="h-32 w-32 text-brand-orange-500/40" />
               </div>
             </motion.div>
           </div>
@@ -269,7 +393,7 @@ export default function LandingPage() {
                 viewport={{ once: true }}
                 transition={{ delay: i * 0.1 }}
               >
-                <Card className={`h-full ${plan.popular ? 'border-primary shadow-lg scale-105' : ''}`}>
+                <Card className={`h-full ${plan.popular ? 'border-brand-orange-500 border-2 shadow-orange-glow scale-105' : ''}`}>
                   <CardHeader>
                     {plan.popular && (
                       <Badge className="mb-2 w-fit">Most Popular</Badge>
@@ -284,7 +408,7 @@ export default function LandingPage() {
                     <ul className="space-y-3">
                       {plan.features.map((feature, idx) => (
                         <li key={idx} className="flex items-center gap-2">
-                          <CheckCircle className="h-4 w-4 text-primary" />
+                          <CheckCircle className="h-4 w-4 text-brand-orange-500" />
                           <span className="text-sm">{feature}</span>
                         </li>
                       ))}
@@ -343,7 +467,7 @@ export default function LandingPage() {
                 <Card className="h-full">
                   <CardHeader>
                     <div className="flex items-center gap-4">
-                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold">
+                      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-orange-500 text-white font-bold">
                         {testimonial.avatar}
                       </div>
                       <div>
@@ -362,32 +486,61 @@ export default function LandingPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-20">
-        <div className="container">
+      {/* CTA Section - Black Background with Orange Accent */}
+      <section className="relative py-32 bg-brand-black overflow-hidden">
+        <DecorativeCircles />
+
+        <div className="container relative z-10">
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="mx-auto max-w-3xl rounded-2xl bg-gradient-to-r from-primary to-accent p-12 text-center text-white"
+            className="mx-auto max-w-4xl text-center"
           >
-            <h2 className="mb-4 text-white">Ready to Start Your Journey?</h2>
-            <p className="mb-8 text-lg text-white/90">
-              Book a free consultation today and let's create a plan tailored just for you.
-            </p>
-            <div className="flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Button size="lg" variant="secondary" asChild>
-                <Link href="/consultation">
-                  Book Free Consultation
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
-              <Button size="lg" variant="outline" className="bg-transparent border-white text-white hover:bg-white hover:text-primary" asChild>
-                <Link href="/plans">View All Plans</Link>
-              </Button>
-            </div>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              className="mb-8"
+            >
+              <h2 className="mb-6 text-white">
+                Stay Connected, Anywhere, Anytime
+              </h2>
+              <h3 className="text-white/90 font-normal max-w-3xl mx-auto">
+                Unlock Your Fitness Potential with Our App
+              </h3>
+            </motion.div>
+
+            <motion.p
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.2 }}
+              className="mb-12 text-lg text-gray-300 max-w-2xl mx-auto"
+            >
+              Take your fitness journey to the next level with our mobile app and desktop! Our app puts the
+              power of fitness and health right at your fingertips.
+            </motion.p>
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ delay: 0.3 }}
+              className="flex flex-col gap-4 sm:flex-row sm:justify-center"
+            >
+              <Link href="/consultation">
+                <button className="btn-primary">
+                  Download Here
+                  <ArrowRight className="ml-2 h-4 w-4 inline" />
+                </button>
+              </Link>
+            </motion.div>
           </motion.div>
         </div>
+
+        {/* Orange Accent Stripe */}
+        <div className="absolute bottom-0 left-0 right-0 h-24 bg-brand-orange-500" />
       </section>
     </div>
   )

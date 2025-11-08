@@ -1,38 +1,41 @@
+/* Inter Font Import */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 @layer base {
   :root {
-    /* Fitness-oriented warm accent colors */
+    /* Shadcn UI Variables (preserved for compatibility) */
     --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
+    --foreground: 0 0% 3.9%;
     --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
+    --card-foreground: 0 0% 3.9%;
     --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
+    --popover-foreground: 0 0% 3.9%;
 
-    /* Warm orange/amber primary - energetic fitness vibe */
-    --primary: 24 95% 53%;
+    /* Primary: Vibrant Orange */
+    --primary: 14 100% 57%;  /* #FF5722 */
     --primary-foreground: 0 0% 100%;
 
-    /* Warm secondary tones */
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
+    /* Secondary: Light cream backgrounds */
+    --secondary: 30 20% 97%;  /* #FAF8F5 */
+    --secondary-foreground: 0 0% 10%;
 
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: 0 0% 96%;
+    --muted-foreground: 0 0% 45%;
 
-    /* Warm accent - complementary to primary */
-    --accent: 37 91% 55%;
-    --accent-foreground: 240 5.9% 10%;
+    /* Accent: Orange for highlights */
+    --accent: 14 100% 57%;
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 0 84.2% 60.2%;
+    --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 98%;
 
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 24 95% 53%;
+    --border: 0 0% 90%;
+    --input: 0 0% 90%;
+    --ring: 14 100% 57%;
 
     --radius: 0.5rem;
   }
@@ -42,27 +45,136 @@
   * {
     @apply border-border;
   }
+
+  html {
+    @apply scroll-smooth;
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground antialiased;
     font-feature-settings: "rlig" 1, "calt" 1;
+  }
+
+  /* Smooth scrolling behavior */
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
   }
 }
 
 @layer components {
-  /* Bold typography for fitness app */
+  /* Typography Hierarchy - Bold, Impactful Fitness Style */
   h1, h2, h3, h4, h5, h6 {
-    @apply font-bold tracking-tight;
+    @apply font-extrabold tracking-tight;
   }
 
   h1 {
-    @apply text-4xl md:text-5xl lg:text-6xl;
+    @apply text-5xl md:text-6xl lg:text-7xl leading-tight;
   }
 
   h2 {
-    @apply text-3xl md:text-4xl lg:text-5xl;
+    @apply text-4xl md:text-5xl lg:text-6xl leading-tight;
   }
 
   h3 {
-    @apply text-2xl md:text-3xl;
+    @apply text-3xl md:text-4xl leading-snug;
+  }
+
+  h4 {
+    @apply text-2xl md:text-3xl font-bold;
+  }
+
+  h5 {
+    @apply text-xl md:text-2xl font-bold;
+  }
+
+  h6 {
+    @apply text-lg md:text-xl font-semibold;
+  }
+
+  /* Paragraph styles */
+  p {
+    @apply leading-relaxed;
+  }
+
+  /* Primary CTA Button */
+  .btn-primary {
+    @apply bg-brand-orange-500 hover:bg-brand-orange-400 active:bg-brand-orange-600
+           text-white font-semibold px-8 py-4 rounded-full
+           transition-all duration-200 hover:scale-105 hover:shadow-orange-glow
+           focus:outline-none focus:ring-2 focus:ring-brand-orange-500 focus:ring-offset-2;
+  }
+
+  /* Secondary CTA Button */
+  .btn-secondary {
+    @apply bg-transparent border-2 border-current hover:bg-brand-orange-500 hover:text-white
+           text-brand-orange-500 font-semibold px-8 py-4 rounded-full
+           transition-all duration-200 hover:scale-105
+           focus:outline-none focus:ring-2 focus:ring-brand-orange-500 focus:ring-offset-2;
+  }
+
+  /* Ghost Button */
+  .btn-ghost {
+    @apply bg-transparent hover:bg-white/10 text-current font-medium px-6 py-3 rounded-full
+           transition-all duration-200
+           focus:outline-none focus:ring-2 focus:ring-brand-orange-500 focus:ring-offset-2;
+  }
+
+  /* Stats Card */
+  .stat-card {
+    @apply bg-white rounded-2xl p-6 shadow-medium hover:shadow-large
+           transition-all duration-300 hover:-translate-y-1;
+  }
+
+  /* Section Container */
+  .section-container {
+    @apply max-w-7xl mx-auto px-6 lg:px-12;
+  }
+
+  /* Decorative curve */
+  .decorative-curve {
+    @apply absolute pointer-events-none opacity-20;
+  }
+}
+
+@layer utilities {
+  /* Text gradients */
+  .text-gradient-orange {
+    @apply bg-clip-text text-transparent bg-gradient-orange;
+  }
+
+  /* Glassmorphism effect */
+  .glass {
+    @apply bg-white/10 backdrop-blur-md border border-white/20;
+  }
+
+  /* Dark glass */
+  .glass-dark {
+    @apply bg-black/30 backdrop-blur-md border border-white/10;
+  }
+
+  /* Smooth animations */
+  .animate-on-scroll {
+    @apply opacity-0 translate-y-8 transition-all duration-700;
+  }
+
+  .animate-on-scroll.visible {
+    @apply opacity-100 translate-y-0;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .hide-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .hide-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Custom focus styles */
+  .focus-brand {
+    @apply focus:outline-none focus:ring-2 focus:ring-brand-orange-500 focus:ring-offset-2;
   }
 }
