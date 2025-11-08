@@ -159,6 +159,40 @@ export const authConfig: NextAuthConfig = {
   ],
 
   callbacks: {
+    authorized({ auth, request: { nextUrl } }) {
+      const isLoggedIn = !!auth?.user;
+      const isOnDashboard = nextUrl.pathname.startsWith("/dashboard");
+      const isOnSchedule = nextUrl.pathname.startsWith("/schedule");
+      const isOnWorkout = nextUrl.pathname.startsWith("/workout");
+      const isOnAnalytics = nextUrl.pathname.startsWith("/analytics");
+      const isOnProfile = nextUrl.pathname.startsWith("/profile");
+      const isOnConsultation = nextUrl.pathname.startsWith("/consultation");
+      const isOnTrainer = nextUrl.pathname.startsWith("/trainer");
+
+      // Trainer-only routes
+      if (isOnTrainer) {
+        if (!isLoggedIn) return false;
+        const isTrainerOrAdmin =
+          auth?.user?.role === "trainer" || auth?.user?.role === "admin";
+        return isTrainerOrAdmin;
+      }
+
+      // Protected routes
+      const isProtected =
+        isOnDashboard ||
+        isOnSchedule ||
+        isOnWorkout ||
+        isOnAnalytics ||
+        isOnProfile ||
+        isOnConsultation;
+
+      if (isProtected && !isLoggedIn) {
+        return false;
+      }
+
+      return true;
+    },
+
     async signIn({ user, account, profile }) {
       // For Google OAuth
       if (account?.provider === "google" && profile?.email) {
