@@ -3,10 +3,11 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
-import { Dumbbell, Menu, X } from "lucide-react"
+import { Dumbbell, Menu, X, User, LogOut, Settings } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { useState } from "react"
 import { cn } from "@/lib/utils"
+import { useSession, signOut } from "next-auth/react"
 
 const navItems = [
   { name: "About me", href: "#about" },
@@ -18,8 +19,11 @@ const navItems = [
 
 export function Navbar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
+  const [userMenuOpen, setUserMenuOpen] = useState(false)
   const pathname = usePathname()
   const isHomePage = pathname === "/"
+  const { data: session, status } = useSession()
+  const isAuthenticated = status === "authenticated"
 
   return (
     <nav className={cn(
@@ -83,17 +87,115 @@ export function Navbar() {
         </div>
 
         {/* Desktop Auth Buttons */}
-        <div className="hidden md:flex md:items-center">
-          <Link href="/consultation">
-            <button className={cn(
-              "px-6 py-2.5 rounded-full font-semibold transition-all duration-200",
-              isHomePage
-                ? "bg-white text-brand-black hover:bg-gray-100"
-                : "bg-brand-orange-500 text-white hover:bg-brand-orange-400"
-            )}>
-              Contact me
-            </button>
-          </Link>
+        <div className="hidden md:flex md:items-center md:gap-4">
+          {isAuthenticated ? (
+            <div className="relative">
+              <button
+                onClick={() => setUserMenuOpen(!userMenuOpen)}
+                className={cn(
+                  "flex items-center gap-2 px-4 py-2 rounded-full transition-all duration-200",
+                  isHomePage
+                    ? "bg-white/10 hover:bg-white/20 text-white"
+                    : "bg-gray-100 hover:bg-gray-200 text-gray-900"
+                )}
+              >
+                <div className={cn(
+                  "w-8 h-8 rounded-full flex items-center justify-center",
+                  isHomePage ? "bg-brand-orange-500" : "bg-brand-orange-500"
+                )}>
+                  {session.user?.image ? (
+                    <img
+                      src={session.user.image}
+                      alt={session.user.name || "User"}
+                      className="w-8 h-8 rounded-full"
+                    />
+                  ) : (
+                    <User className="w-4 h-4 text-white" />
+                  )}
+                </div>
+                <span className="text-sm font-medium">{session.user?.name}</span>
+              </button>
+
+              {/* User Dropdown Menu */}
+              {userMenuOpen && (
+                <motion.div
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={cn(
+                    "absolute right-0 mt-2 w-48 rounded-lg shadow-lg border overflow-hidden",
+                    isHomePage
+                      ? "bg-brand-black border-white/10"
+                      : "bg-white border-gray-200"
+                  )}
+                >
+                  <Link
+                    href="/dashboard"
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-3 text-sm transition-colors",
+                      isHomePage
+                        ? "text-white hover:bg-white/10"
+                        : "text-gray-900 hover:bg-gray-100"
+                    )}
+                    onClick={() => setUserMenuOpen(false)}
+                  >
+                    <User className="w-4 h-4" />
+                    Dashboard
+                  </Link>
+                  <Link
+                    href="/profile"
+                    className={cn(
+                      "flex items-center gap-2 px-4 py-3 text-sm transition-colors",
+                      isHomePage
+                        ? "text-white hover:bg-white/10"
+                        : "text-gray-900 hover:bg-gray-100"
+                    )}
+                    onClick={() => setUserMenuOpen(false)}
+                  >
+                    <Settings className="w-4 h-4" />
+                    Settings
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setUserMenuOpen(false)
+                      signOut({ callbackUrl: "/" })
+                    }}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-4 py-3 text-sm transition-colors border-t",
+                      isHomePage
+                        ? "text-red-400 hover:bg-white/10 border-white/10"
+                        : "text-red-600 hover:bg-gray-100 border-gray-200"
+                    )}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </motion.div>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link href="/auth/signin">
+                <button className={cn(
+                  "px-6 py-2.5 rounded-full font-semibold transition-all duration-200",
+                  isHomePage
+                    ? "text-white hover:bg-white/10"
+                    : "text-gray-900 hover:bg-gray-100"
+                )}>
+                  Sign In
+                </button>
+              </Link>
+              <Link href="/consultation">
+                <button className={cn(
+                  "px-6 py-2.5 rounded-full font-semibold transition-all duration-200",
+                  isHomePage
+                    ? "bg-white text-brand-black hover:bg-gray-100"
+                    : "bg-brand-orange-500 text-white hover:bg-brand-orange-400"
+                )}>
+                  Contact me
+                </button>
+              </Link>
+            </>
+          )}
         </div>
 
         {/* Mobile Menu Button */}
@@ -143,17 +245,60 @@ export function Navbar() {
                 {item.name}
               </Link>
             ))}
-            <div className="pt-4">
-              <Link href="/consultation" onClick={() => setMobileMenuOpen(false)}>
-                <button className={cn(
-                  "w-full px-6 py-2.5 rounded-full font-semibold transition-all duration-200",
-                  isHomePage
-                    ? "bg-white text-brand-black hover:bg-gray-100"
-                    : "bg-brand-orange-500 text-white hover:bg-brand-orange-400"
-                )}>
-                  Contact me
-                </button>
-              </Link>
+            <div className="pt-4 space-y-2">
+              {isAuthenticated ? (
+                <>
+                  <Link href="/dashboard" onClick={() => setMobileMenuOpen(false)}>
+                    <button className={cn(
+                      "w-full px-6 py-2.5 rounded-full font-semibold transition-all duration-200 flex items-center justify-center gap-2",
+                      isHomePage
+                        ? "bg-white/10 text-white hover:bg-white/20"
+                        : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                    )}>
+                      <User className="w-4 h-4" />
+                      Dashboard
+                    </button>
+                  </Link>
+                  <button
+                    onClick={() => {
+                      setMobileMenuOpen(false)
+                      signOut({ callbackUrl: "/" })
+                    }}
+                    className={cn(
+                      "w-full px-6 py-2.5 rounded-full font-semibold transition-all duration-200 flex items-center justify-center gap-2",
+                      isHomePage
+                        ? "bg-red-500/20 text-red-400 hover:bg-red-500/30"
+                        : "bg-red-50 text-red-600 hover:bg-red-100"
+                    )}
+                  >
+                    <LogOut className="w-4 h-4" />
+                    Sign Out
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link href="/auth/signin" onClick={() => setMobileMenuOpen(false)}>
+                    <button className={cn(
+                      "w-full px-6 py-2.5 rounded-full font-semibold transition-all duration-200",
+                      isHomePage
+                        ? "bg-white/10 text-white hover:bg-white/20"
+                        : "bg-gray-100 text-gray-900 hover:bg-gray-200"
+                    )}>
+                      Sign In
+                    </button>
+                  </Link>
+                  <Link href="/consultation" onClick={() => setMobileMenuOpen(false)}>
+                    <button className={cn(
+                      "w-full px-6 py-2.5 rounded-full font-semibold transition-all duration-200",
+                      isHomePage
+                        ? "bg-white text-brand-black hover:bg-gray-100"
+                        : "bg-brand-orange-500 text-white hover:bg-brand-orange-400"
+                    )}>
+                      Contact me
+                    </button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </motion.div>
